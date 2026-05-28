@@ -8,13 +8,13 @@ pool:
 
 variables:
   buildConfiguration: Release
-  dotnetVersion: '8.x'
-  projectPath: 'EcoWatch.Api/EcoWatch.Api.csproj'
-  publishOutput: '$(Build.ArtifactStagingDirectory)/publish'
+  dotnetVersion: "8.x"
+  projectPath: "EcoWatch.Api/EcoWatch.Api.csproj"
+  publishOutput: "$(Build.ArtifactStagingDirectory)/publish"
 
   # Substitua pelos valores do seu ambiente
-  azureServiceConnection: '<nome-da-service-connection>'
-  webAppName: '<nome-do-webapp-no-azure>'
+  azureServiceConnection: "fire-shield-sc"
+  webAppName: "app-fire-shield"
 
 stages:
   - stage: Build
@@ -31,21 +31,21 @@ stages:
             displayName: Restore
             inputs:
               command: restore
-              projects: '*.sln'
+              projects: "*.sln"
 
           - task: DotNetCoreCLI@2
             displayName: Build
             inputs:
               command: build
-              projects: '*.sln'
-              arguments: '--configuration $(buildConfiguration) --no-restore'
+              projects: "*.sln"
+              arguments: "--configuration $(buildConfiguration) --no-restore"
 
           - task: DotNetCoreCLI@2
             displayName: Publish
             inputs:
               command: publish
               projects: $(projectPath)
-              arguments: '--configuration $(buildConfiguration) --no-build --output $(publishOutput)'
+              arguments: "--configuration $(buildConfiguration) --no-build --output $(publishOutput)"
               zipAfterPublish: true
 
           - task: PublishBuildArtifacts@1
@@ -71,5 +71,5 @@ stages:
                     azureSubscription: $(azureServiceConnection)
                     appType: webApp
                     appName: $(webAppName)
-                    package: '$(Pipeline.Workspace)/drop/*.zip'
+                    package: "$(Pipeline.Workspace)/drop/*.zip"
                     deploymentMethod: zipDeploy
