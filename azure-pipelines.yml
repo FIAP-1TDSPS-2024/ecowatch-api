@@ -12,7 +12,6 @@ variables:
   projectPath: "EcoWatch.Api/EcoWatch.Api.csproj"
   publishOutput: "$(Build.ArtifactStagingDirectory)/publish"
 
-  # Substitua pelos valores do seu ambiente
   azureServiceConnection: "fire-shield-sc"
   webAppName: "app-fire-shield"
 
