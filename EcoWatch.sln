@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Api", "EcoWatch.Api\EcoWatch.Api.csproj", "{EB00B4C2-9F5C-427F-B52C-387B6F464230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Application", "EcoWatch.Application\EcoWatch.Application.csproj", "{75F4DFBB-75EC-4C3A-943E-A85846A7B6DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Domain", "EcoWatch.Domain\EcoWatch.Domain.csproj", "{BAD000DF-F4B3-4F92-BA4C-92C1B7525352}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Infrastructure", "EcoWatch.Infrastructure\EcoWatch.Infrastructure.csproj", "{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB00B4C2-9F5C-427F-B52C-387B6F464230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB00B4C2-9F5C-427F-B52C-387B6F464230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB00B4C2-9F5C-427F-B52C-387B6F464230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB00B4C2-9F5C-427F-B52C-387B6F464230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75F4DFBB-75EC-4C3A-943E-A85846A7B6DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F4DFBB-75EC-4C3A-943E-A85846A7B6DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F4DFBB-75EC-4C3A-943E-A85846A7B6DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F4DFBB-75EC-4C3A-943E-A85846A7B6DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAD000DF-F4B3-4F92-BA4C-92C1B7525352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAD000DF-F4B3-4F92-BA4C-92C1B7525352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAD000DF-F4B3-4F92-BA4C-92C1B7525352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAD000DF-F4B3-4F92-BA4C-92C1B7525352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
