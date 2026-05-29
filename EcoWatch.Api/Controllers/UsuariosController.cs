@@ -59,5 +59,21 @@ namespace EcoWatch.Api.Controllers
 
             return Ok(new { message = "Perfil atualizado com sucesso." });
         }
+
+        [HttpDelete("deletar-conta")]
+        public async Task<IActionResult> DeletarConta()
+        {
+            var emailLogado = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var usuario = await _context.Usuarios
+                .Include(u => u.Ocorrencias)
+                .FirstOrDefaultAsync(u => u.Email == emailLogado);
+
+            if (usuario == null) return NotFound();
+
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
