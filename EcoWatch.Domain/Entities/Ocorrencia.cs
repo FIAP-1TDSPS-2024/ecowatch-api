@@ -10,8 +10,10 @@ namespace EcoWatch.Domain.Entities
         public string TipoOcorrencia { get; set; }
         public string DetalhesAdicionais { get; set; }
         public DateTime DataOcorrenciaUtc { get; set; }
-
         public Guid UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
+        public string? Urgencia { get; set; }
+        public double? Area { get; set; }
+        public double? Distancia { get; set; }
     }
 }

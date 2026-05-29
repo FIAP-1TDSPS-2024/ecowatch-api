@@ -18,5 +18,13 @@ namespace EcoWatch.Api.DTOs.Requests
 
         [MaxLength(500)]
         public string DetalhesAdicionais { get; set; }
+
+        [Required(ErrorMessage = "A urgência é obrigatória.")]
+        public string Urgencia { get; set; }
+
+        public double Area { get; set; }
+
+        public double Distancia { get; set; }
+
     }
 }

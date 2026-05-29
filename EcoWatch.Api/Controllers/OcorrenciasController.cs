@@ -40,7 +40,10 @@ namespace EcoWatch.Api.Controllers
                 TipoOcorrencia = request.TipoOcorrencia,
                 DetalhesAdicionais = request.DetalhesAdicionais,
                 DataOcorrenciaUtc = DateTime.UtcNow,
-                UsuarioId = usuario.Id
+                UsuarioId = usuario.Id,
+                Urgencia = request.Urgencia,
+                Area = request.Area,
+                Distancia = request.Distancia
             };
 
             _context.Ocorrencias.Add(novaOcorrencia);
@@ -52,6 +55,9 @@ namespace EcoWatch.Api.Controllers
                 Tipo = novaOcorrencia.TipoOcorrencia,
                 Latitude = novaOcorrencia.Latitude,
                 Longitude = novaOcorrencia.Longitude,
+                Urgencia = novaOcorrencia.Urgencia,
+                Area = novaOcorrencia.Area,
+                Distancia = novaOcorrencia.Distancia,
                 DataUtc = novaOcorrencia.DataOcorrenciaUtc,
                 ReportadoPor = usuario.Nome,
                 ContatoAutor = usuario.Email
@@ -77,11 +83,36 @@ namespace EcoWatch.Api.Controllers
                 Title = o.TipoOcorrencia,
                 Description = o.DetalhesAdicionais ?? "Sem detalhes",
                 ReportedAt = o.DataOcorrenciaUtc,
-                Urgency = "critical",
+                Urgency = o.Urgencia ?? "baixa",
+                Area = o.Area ?? 0.0,
+                Distance = o.Distancia ?? 0.0,
                 ReportedBy = o.Usuario != null ? o.Usuario.Nome : "Usuário Anônimo"
             });
 
             return Ok(response);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeletarOcorrencia(Guid id)
+        {
+            var emailLogado = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var usuarioLogado = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailLogado);
+            if (usuarioLogado == null) return Unauthorized();
+
+            var ocorrencia = await _context.Ocorrencias.FirstOrDefaultAsync(o => o.Id == id);
+
+            if (ocorrencia == null)
+                return NotFound(new { message = "Ocorrência não encontrada." });
+
+            if (ocorrencia.UsuarioId != usuarioLogado.Id)
+            {
+                return Forbid();
+            }
+
+            _context.Ocorrencias.Remove(ocorrencia);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
