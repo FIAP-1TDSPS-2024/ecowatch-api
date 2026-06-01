@@ -12,11 +12,17 @@ O **EcoWatch** é a espinha dorsal de um ecossistema de monitoramento ambiental.
 
 ---
 
-## Swagger
+## API Docs
+
+#### Swagger
 
 ```
 https://app-fire-shield.azurewebsites.net/swagger/index.html
 ```
+
+#### Collection Postman
+
+[EcoWatch API Postman Collection](./EcoWatch%20API.postman_collection.json)
 
 ## 🏗️ Arquitetura e Decisões Técnicas
 
