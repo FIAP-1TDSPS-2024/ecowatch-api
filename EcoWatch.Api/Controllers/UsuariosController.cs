@@ -24,9 +24,16 @@ namespace EcoWatch.Api.Controllers
         public async Task<IActionResult> ObterPerfil()
         {
             var emailLogado = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(emailLogado)) return Unauthorized();
 
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailLogado);
-            if (usuario == null) return NotFound();
+            var usuario = await _context.Usuarios
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == emailLogado);
+
+            if (usuario == null) return NotFound(new { message = "Usuário não encontrado." });
+
+            var totalReportes = await _context.Ocorrencias
+                .CountAsync(o => o.UsuarioId == usuario.Id);
 
             var response = new PerfilResponseDto
             {
@@ -34,7 +41,7 @@ namespace EcoWatch.Api.Controllers
                 Email = usuario.Email,
                 Localidade = usuario.Localidade,
                 RaioAlertasKm = usuario.RaioAlertasKm,
-                TotalReportes = 0
+                TotalReportes = totalReportes
             };
 
             return Ok(response);
@@ -46,15 +53,15 @@ namespace EcoWatch.Api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var emailLogado = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailLogado);
+            if (string.IsNullOrEmpty(emailLogado)) return Unauthorized();
 
-            if (usuario == null) return NotFound();
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailLogado);
+            if (usuario == null) return NotFound(new { message = "Usuário não encontrado." });
 
             usuario.Nome = request.Nome;
             usuario.Localidade = request.Localidade;
             usuario.RaioAlertasKm = request.RaioAlertasKm;
 
-            _context.Usuarios.Update(usuario);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Perfil atualizado com sucesso." });

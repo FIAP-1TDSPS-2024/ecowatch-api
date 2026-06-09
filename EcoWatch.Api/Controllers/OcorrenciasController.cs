@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using EcoWatch.Api.Filters;
+using System;
 
 namespace EcoWatch.Api.Controllers
 {
@@ -90,6 +92,60 @@ namespace EcoWatch.Api.Controllers
             });
 
             return Ok(response);
+        }
+
+        [HttpPost("satelite")]
+        [AllowAnonymous]
+        [ApiKeyAuth]
+        public async Task<IActionResult> RegistrarOcorrenciaViaSatelite([FromBody] AlertaSateliteRequestDto request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var emailSatelite = "ia-satelite@ecowatch.com";
+            var botUsuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailSatelite);
+
+            if (botUsuario == null)
+            {
+                botUsuario = new Usuario
+                {
+                    Id = Guid.NewGuid(),
+                    Nome = "Sistema de Detecção (IA Satélite)",
+                    Email = emailSatelite,
+                    SenhaHash = "SERVICE_ACCOUNT_NO_LOGIN"
+                };
+
+                _context.Usuarios.Add(botUsuario);
+                await _context.SaveChangesAsync();
+            }
+
+            var novaOcorrencia = new Ocorrencia
+            {
+                Latitude = request.Latitude,
+                Longitude = request.Longitude,
+                TipoOcorrencia = "Incêndio Florestal (Detecção IA)",
+                DetalhesAdicionais = $"Foco validado por Visão Computacional com {Math.Round(request.Confianca * 100, 2)}% de confiança. Ref Mongo: {request.ReferenciaIdMongo}",
+                DataOcorrenciaUtc = DateTime.UtcNow,
+                Urgencia = request.Confianca > 0.85 ? "Crítica" : "Alta",
+                UsuarioId = botUsuario.Id
+            };
+
+            _context.Ocorrencias.Add(novaOcorrencia);
+            await _context.SaveChangesAsync();
+
+            var eventoAlerta = new
+            {
+                Id = novaOcorrencia.Id,
+                Tipo = novaOcorrencia.TipoOcorrencia,
+                Latitude = novaOcorrencia.Latitude,
+                Longitude = novaOcorrencia.Longitude,
+                Urgencia = novaOcorrencia.Urgencia,
+                DataUtc = novaOcorrencia.DataOcorrenciaUtc,
+                ReportadoPor = botUsuario.Nome
+            };
+
+            await _messageBus.PublicarAlertaIncendioAsync(eventoAlerta);
+
+            return StatusCode(201, new { message = "Alerta de satélite integrado com sucesso.", id = novaOcorrencia.Id });
         }
 
         [HttpDelete("{id:guid}")]

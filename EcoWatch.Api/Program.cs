@@ -79,36 +79,39 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddSingleton<MongoDbContext>(sp =>
-{
-    var config = sp.GetRequiredService<IConfiguration>();
-    var connectionString = config["MongoDb:ConnectionString"];
-    var databaseName = config["MongoDb:DatabaseName"];
-
-    if (string.IsNullOrEmpty(connectionString))
-        throw new ArgumentNullException("A Connection String do MongoDB não foi encontrada.");
-
-    return new MongoDbContext(connectionString, databaseName);
-});
-
-builder.Services.AddScoped<IMessageBusService, RabbitMqService>();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
 var oracleConn = builder.Configuration.GetConnectionString("OracleConnection");
 var rabbitConn = builder.Configuration["RabbitMq:ConnectionString"];
 var mongoConn = builder.Configuration["MongoDb:ConnectionString"];
+var mongoDatabase = builder.Configuration["MongoDb:DatabaseName"];
+
+builder.Services.AddSingleton<MongoDbContext>(sp =>
+{
+    if (string.IsNullOrEmpty(mongoConn))
+        throw new ArgumentNullException("A Connection String do MongoDB não foi encontrada.");
+
+    return new MongoDbContext(mongoConn, mongoDatabase);
+});
 
 builder.Services.AddSingleton<IConnection>(sp =>
 {
+    if (string.IsNullOrEmpty(rabbitConn))
+        throw new ArgumentNullException("A Connection String do RabbitMQ não foi encontrada.");
+
     var factory = new ConnectionFactory { Uri = new Uri(rabbitConn) };
-    return factory.CreateConnectionAsync().GetAwaiter().GetResult();
+    return factory.CreateConnection();
 });
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
     return new MongoClient(mongoConn);
 });
+
+builder.Services.AddSingleton<MongoDbService>();
+
+builder.Services.AddScoped<IMessageBusService, RabbitMqService>();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>(
@@ -118,9 +121,9 @@ builder.Services.AddHealthChecks()
         name: "CloudAMQP RabbitMQ",
         tags: new[] { "queue", "amqp" })
     .AddMongoDb(
+        mongodbConnectionString: mongoConn,
         name: "MongoDB Atlas",
         tags: new[] { "db", "nosql" });
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -130,13 +133,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
-
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapHealthChecks("/health", new HealthCheckOptions

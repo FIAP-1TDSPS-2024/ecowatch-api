@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Domain", "EcoWatch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Infrastructure", "EcoWatch.Infrastructure\EcoWatch.Infrastructure.csproj", "{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoWatch.Tests", "EcoWatch.Tests\EcoWatch.Tests.csproj", "{DF6A29C9-99E0-432A-BF82-514F6F0EC840}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2111D604-38CD-4642-9E0E-3F38FDDF0EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF6A29C9-99E0-432A-BF82-514F6F0EC840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF6A29C9-99E0-432A-BF82-514F6F0EC840}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF6A29C9-99E0-432A-BF82-514F6F0EC840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF6A29C9-99E0-432A-BF82-514F6F0EC840}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

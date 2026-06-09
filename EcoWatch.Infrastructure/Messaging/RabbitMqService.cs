@@ -22,14 +22,14 @@ namespace EcoWatch.Infrastructure.Messaging
             }
         }
 
-        public async Task PublicarAlertaIncendioAsync(object ocorrenciaPayload)
+        public Task PublicarAlertaIncendioAsync(object ocorrenciaPayload)
         {
             var factory = new ConnectionFactory { Uri = new Uri(_connectionString) };
 
-            using var connection = await factory.CreateConnectionAsync();
-            using var channel = await connection.CreateChannelAsync();
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
 
-            await channel.QueueDeclareAsync(
+            channel.QueueDeclare(
                 queue: "alertas_incendio_queue",
                 durable: true,
                 exclusive: false,
@@ -39,17 +39,47 @@ namespace EcoWatch.Infrastructure.Messaging
             var mensagem = JsonSerializer.Serialize(ocorrenciaPayload);
             var corpoMensagem = Encoding.UTF8.GetBytes(mensagem);
 
-            var properties = new BasicProperties
-            {
-                Persistent = true
-            };
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
 
-            await channel.BasicPublishAsync(
+            channel.BasicPublish(
                 exchange: string.Empty,
                 routingKey: "alertas_incendio_queue",
                 mandatory: false,
                 basicProperties: properties,
                 body: corpoMensagem);
+
+            return Task.CompletedTask;
+        }
+
+        public Task PublicarImagemRecebidaAsync(object eventoTelemetria)
+        {
+            var factory = new ConnectionFactory { Uri = new Uri(_connectionString) };
+
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+
+            channel.QueueDeclare(
+                queue: "telemetria_satelite_queue",
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            var mensagem = JsonSerializer.Serialize(eventoTelemetria);
+            var corpoMensagem = Encoding.UTF8.GetBytes(mensagem);
+
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
+
+            channel.BasicPublish(
+                exchange: string.Empty,
+                routingKey: "telemetria_satelite_queue",
+                mandatory: false,
+                basicProperties: properties,
+                body: corpoMensagem);
+
+            return Task.CompletedTask;
         }
     }
 }
