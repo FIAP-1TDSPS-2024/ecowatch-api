@@ -145,7 +145,7 @@ namespace EcoWatch.Api.Controllers
 
             await _messageBus.PublicarAlertaIncendioAsync(eventoAlerta);
 
-            return StatusCode(201, new { message = "Alerta de satélite integrado com sucesso.", id = novaOcorrencia.Id });
+            return StatusCode(201, new { message = "Alerta de satélite integrado com sucesso.", id = novaOcorrencia.Id });}
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> AtualizarOcorrencia(Guid id, [FromBody] AtualizarOcorrenciaRequestDto request)
         {

@@ -120,8 +120,7 @@ builder.Services.AddHealthChecks()
     .AddRabbitMQ(
         name: "CloudAMQP RabbitMQ",
         tags: new[] { "queue", "amqp" })
-    .AddMongoDb(
-        mongodbConnectionString: mongoConn,
+    .AddCheck<MongoHealthCheck>(
         name: "MongoDB Atlas",
         tags: new[] { "db", "nosql" });
 var app = builder.Build();
