@@ -146,6 +146,47 @@ namespace EcoWatch.Api.Controllers
             await _messageBus.PublicarAlertaIncendioAsync(eventoAlerta);
 
             return StatusCode(201, new { message = "Alerta de satélite integrado com sucesso.", id = novaOcorrencia.Id });
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> AtualizarOcorrencia(Guid id, [FromBody] AtualizarOcorrenciaRequestDto request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var emailLogado = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var usuarioLogado = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailLogado);
+            if (usuarioLogado == null) return Unauthorized();
+
+            var ocorrencia = await _context.Ocorrencias.FirstOrDefaultAsync(o => o.Id == id);
+
+            if (ocorrencia == null)
+                return NotFound(new { message = "Ocorrência não encontrada." });
+
+            if (ocorrencia.UsuarioId != usuarioLogado.Id)
+                return Forbid();
+
+            ocorrencia.Latitude = request.Latitude;
+            ocorrencia.Longitude = request.Longitude;
+            ocorrencia.TipoOcorrencia = request.TipoOcorrencia;
+            ocorrencia.DetalhesAdicionais = request.DetalhesAdicionais;
+            ocorrencia.Urgencia = request.Urgencia;
+            ocorrencia.Area = request.Area;
+            ocorrencia.Distancia = request.Distancia;
+
+            _context.Ocorrencias.Update(ocorrencia);
+            await _context.SaveChangesAsync();
+
+            return Ok(new OcorrenciaResponseDto
+            {
+                Id = ocorrencia.Id.ToString(),
+                Latitude = ocorrencia.Latitude,
+                Longitude = ocorrencia.Longitude,
+                Title = ocorrencia.TipoOcorrencia,
+                Description = ocorrencia.DetalhesAdicionais ?? "Sem detalhes",
+                ReportedAt = ocorrencia.DataOcorrenciaUtc,
+                Urgency = ocorrencia.Urgencia ?? "baixa",
+                Area = ocorrencia.Area ?? 0.0,
+                Distance = ocorrencia.Distancia ?? 0.0,
+                ReportedBy = usuarioLogado.Nome
+            });
         }
 
         [HttpDelete("{id:guid}")]

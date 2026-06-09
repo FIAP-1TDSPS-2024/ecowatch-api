@@ -1,0 +1,22 @@
+name: Mirror to Azure Repos
+
+on:
+  push:
+    branches: ["main"] # Executa sempre que houver código novo na main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Baixa todo o histórico
+
+      - name: Push para o Azure Repos
+        env:
+          AZURE_TOKEN: ${{ secrets.AZURE_DEVOPS_TOKEN }}
+        run: |
+          git remote add azure https://user:$AZURE_TOKEN@dev.azure.com/CATECH-2026/Fire%20Shield/_git/fire-shield-api
+
+          git push azure main --force

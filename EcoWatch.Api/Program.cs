@@ -126,11 +126,8 @@ builder.Services.AddHealthChecks()
         tags: new[] { "db", "nosql" });
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
