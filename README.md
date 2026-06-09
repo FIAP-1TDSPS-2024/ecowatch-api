@@ -151,6 +151,6 @@ dotnet test
 
 ## 🎥 Entregáveis em Vídeo (Global Solution)
 
--   🖥️ **Vídeo Demonstração (8 min):** [Insira o Link do YouTube Aqui]
+-   🖥️ **Vídeo Demonstração (8 min):** [https://youtu.be/HX6D0au5y9Q]
 
--   🚀 **Vídeo Pitch (3 min):** [Insira o Link do YouTube Aqui]
+-   🚀 **Vídeo Pitch (3 min):** [https://youtu.be/GsAYWs-uM_A]
